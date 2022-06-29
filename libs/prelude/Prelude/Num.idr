@@ -11,16 +11,21 @@ import Prelude.EqOrd
 
 %integerLit fromInteger
 
+||| Interface for types that can be constructed from integer literals.
+public export
+interface FromInteger ty where
+   constructor MkFromInteger
+   ||| Conversion from Integer.
+   fromInteger : Integer -> ty
+
+%allow_overloads fromInteger
+
 ||| The Num interface defines basic numerical arithmetic.
 public export
-interface Num ty where
+interface FromInteger ty => Num ty where
   constructor MkNum
   (+) : ty -> ty -> ty
   (*) : ty -> ty -> ty
-  ||| Conversion from Integer.
-  fromInteger : Integer -> ty
-
-%allow_overloads fromInteger
 
 ||| The `Neg` interface defines operations on numbers which can be negative.
 public export
@@ -71,11 +76,24 @@ interface Num ty => Integral ty where
 
 %inline
 public export
+FromInteger Integer where
+  fromInteger = id
+
+%inline
+public export
 Num Integer where
   (+) = prim__add_Integer
   (*) = prim__mul_Integer
-  fromInteger = id
 
+%defaulthint
+%inline
+public export
+defaultInteger : FromInteger Integer
+defaultInteger = %search
+
+-- This allows us to pick integer as a default at the end of elaboration if
+-- all other possibilities fail. I don't plan to provide a nicer syntax for
+-- this...
 %inline
 public export
 Neg Integer where
@@ -95,23 +113,18 @@ Integral Integer where
       = case y == 0 of
              False => prim__mod_Integer x y
 
--- This allows us to pick integer as a default at the end of elaboration if
--- all other possibilities fail. I don't plan to provide a nicer syntax for
--- this...
-%defaulthint
+-- Int
+
 %inline
 public export
-defaultInteger : Num Integer
-defaultInteger = %search
-
--- Int
+FromInteger Int where
+  fromInteger = prim__cast_IntegerInt
 
 %inline
 public export
 Num Int where
   (+) = prim__add_Int
   (*) = prim__mul_Int
-  fromInteger = prim__cast_IntegerInt
 
 %inline
 public export
@@ -136,10 +149,14 @@ Integral Int where
 
 %inline
 public export
+FromInteger Int8 where
+  fromInteger = prim__cast_IntegerInt8
+
+%inline
+public export
 Num Int8 where
   (+) = prim__add_Int8
   (*) = prim__mul_Int8
-  fromInteger = prim__cast_IntegerInt8
 
 %inline
 public export
@@ -164,10 +181,14 @@ Integral Int8 where
 
 %inline
 public export
+FromInteger Int16 where
+  fromInteger = prim__cast_IntegerInt16
+
+%inline
+public export
 Num Int16 where
   (+) = prim__add_Int16
   (*) = prim__mul_Int16
-  fromInteger = prim__cast_IntegerInt16
 
 %inline
 public export
@@ -192,10 +213,14 @@ Integral Int16 where
 
 %inline
 public export
+FromInteger Int32 where
+  fromInteger = prim__cast_IntegerInt32
+
+%inline
+public export
 Num Int32 where
   (+) = prim__add_Int32
   (*) = prim__mul_Int32
-  fromInteger = prim__cast_IntegerInt32
 
 %inline
 public export
@@ -220,10 +245,14 @@ Integral Int32 where
 
 %inline
 public export
+FromInteger Int64 where
+  fromInteger = prim__cast_IntegerInt64
+
+%inline
+public export
 Num Int64 where
   (+) = prim__add_Int64
   (*) = prim__mul_Int64
-  fromInteger = prim__cast_IntegerInt64
 
 %inline
 public export
@@ -248,10 +277,14 @@ Integral Int64 where
 
 %inline
 public export
+FromInteger Bits8 where
+  fromInteger = prim__cast_IntegerBits8
+
+%inline
+public export
 Num Bits8 where
   (+) = prim__add_Bits8
   (*) = prim__mul_Bits8
-  fromInteger = prim__cast_IntegerBits8
 
 %inline
 public export
@@ -276,10 +309,14 @@ Integral Bits8 where
 
 %inline
 public export
+FromInteger Bits16 where
+  fromInteger = prim__cast_IntegerBits16
+
+%inline
+public export
 Num Bits16 where
   (+) = prim__add_Bits16
   (*) = prim__mul_Bits16
-  fromInteger = prim__cast_IntegerBits16
 
 %inline
 public export
@@ -304,10 +341,14 @@ Integral Bits16 where
 
 %inline
 public export
+FromInteger Bits32 where
+  fromInteger = prim__cast_IntegerBits32
+
+%inline
+public export
 Num Bits32 where
   (+) = prim__add_Bits32
   (*) = prim__mul_Bits32
-  fromInteger = prim__cast_IntegerBits32
 
 %inline
 public export
@@ -332,10 +373,14 @@ Integral Bits32 where
 
 %inline
 public export
+FromInteger Bits64 where
+  fromInteger = prim__cast_IntegerBits64
+
+%inline
+public export
 Num Bits64 where
   (+) = prim__add_Bits64
   (*) = prim__mul_Bits64
-  fromInteger = prim__cast_IntegerBits64
 
 %inline
 public export
@@ -358,11 +403,15 @@ Integral Bits64 where
 
 -- Double
 
+%inline
+public export
+FromInteger Double where
+  fromInteger = prim__cast_IntegerDouble
+
 public export
 Num Double where
   (+) = prim__add_Double
   (*) = prim__mul_Double
-  fromInteger = prim__cast_IntegerDouble
 
 %inline
 public export

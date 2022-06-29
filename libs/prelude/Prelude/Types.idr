@@ -64,11 +64,13 @@ mult Z y = Z
 mult (S k) y = plus y (mult k y)
 
 public export
+FromInteger Nat where
+  fromInteger x = integerToNat x
+
+public export
 Num Nat where
   (+) = plus
   (*) = mult
-
-  fromInteger x = integerToNat x
 
 -- used for nat hack
 public export

@@ -64,10 +64,13 @@ Monoid a => Monoid (Identity a) where
   neutral = Id (neutral)
 
 public export
+FromInteger a => FromInteger (Identity a) where
+  fromInteger = Id . fromInteger
+
+public export
 Num a => Num (Identity a) where
   Id x + Id y = Id (x + y)
   Id x * Id y = Id (x * y)
-  fromInteger = Id . fromInteger
 
 public export
 Neg a => Neg (Identity a) where

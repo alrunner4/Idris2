@@ -31,10 +31,13 @@ Monoid a => Monoid (Const a b) where
   neutral = MkConst neutral
 
 public export
+FromInteger a => FromInteger (Const a b) where
+  fromInteger = MkConst . fromInteger
+
+public export
 Num a => Num (Const a b) where
   MkConst x + MkConst y = MkConst (x + y)
   MkConst x * MkConst y = MkConst (x * y)
-  fromInteger = MkConst . fromInteger
 
 public export
 Neg a => Neg (Const a b) where

@@ -267,14 +267,16 @@ restrict n val = let val' = assert_total (abs (mod val (cast (S n)))) in
 --------------------------------------------------------------------------------
 
 public export
+{n : Nat} -> FromInteger (Fin (S n)) where
+  fromInteger = restrict n
+
+public export
 {n : Nat} -> Num (Fin (S n)) where
   FZ + y = y
   (+) {n = S _} (FS x) y = finS $ assert_smaller x (weaken x) + y
 
   FZ * y = FZ
   (FS x) * y = y + (assert_smaller x $ weaken x) * y
-
-  fromInteger = restrict n
 
 public export
 {n : Nat} -> Neg (Fin (S n)) where
