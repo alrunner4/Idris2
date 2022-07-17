@@ -1,7 +1,10 @@
 ||| Provides mutable references as described in Lazy Functional State Threads.
 module Control.Monad.ST
 
+import Data.IOArray
 import Data.IORef
+
+%hide Prelude.Types.elem
 
 %default total
 
@@ -13,6 +16,10 @@ import Data.IORef
 export
 data STRef : Type -> Type -> Type where
      MkSTRef : IORef a -> STRef s a
+
+export
+data STArray : Type -> Type -> Type where
+   MkSTArray : IOArray a -> STArray s a
 
 ||| The `ST` monad allows for mutable access to references, but unlike `IO`, it
 ||| is "escapable".
@@ -53,6 +60,12 @@ newSTRef val
     = MkST $ do r <- newIORef val
                 pure (MkSTRef r)
 
+export
+newSTArray : Int -> ST s (STArray s a)
+newSTArray size
+    = MkST $ do r <- newArray size
+                pure (MkSTArray r)
+
 ||| Read the value of a mutable reference.
 |||
 ||| This occurs within `ST s` to prevent `STRef`s from being usable if they are
@@ -74,3 +87,20 @@ modifySTRef : STRef s a -> (a -> a) -> ST s ()
 modifySTRef ref f
     = do val <- readSTRef ref
          writeSTRef ref (f val)
+
+%inline
+export
+readSTArray : STArray s a -> Int -> ST s (Maybe a)
+readSTArray (MkSTArray r) i = MkST $ readArray r i
+
+%inline
+export
+writeSTArray : STArray s a -> Int -> a -> ST s Bool
+writeSTArray (MkSTArray r) i x = MkST $ writeArray r i x
+
+export
+modifySTArray : STArray s a -> Int -> (Maybe a -> a) -> ST s Bool
+modifySTArray arr i f
+    = do val <- readSTArray arr i
+         writeSTArray arr i (f val)
+
