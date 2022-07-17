@@ -58,8 +58,11 @@ mult (PS m) (NS n) = NS (m * n + m + n)
 mult (NS m) (PS n) = NS (m * n + m + n)
 
 public export
+FromInteger INTEGER where
+   fromInteger = cast
+
+public export
 Num INTEGER where
-  fromInteger = cast
   (+) = add
   (*) = mult
 
