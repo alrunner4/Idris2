@@ -5,7 +5,7 @@ import Data.IORef
 
 ||| The ST monad transformer.
 |||
-||| `STT s m a` has is an operation on the state thread `s` in `Monad m` with result `a`.
+||| `STT s m a` is an operation on the state thread `s` in `Monad m` with result `a`.
 export
 data STT: Type -> (Type -> Type) -> Type -> Type where
    MkSTT: IO a -> (a -> m b) -> STT s m b
@@ -31,10 +31,10 @@ interface Monad m => MonadST (m: Type -> Type) where
    VarRef: Type -> Type -> Type
    ArrayRef: Type -> Type -> Type
    newSTTRef: a -> m (VarRef s a)
-   readSTTRef: VarRef s a -> m a
+   readSTTRef:  VarRef s a -> m a
    writeSTTRef: VarRef s a -> a -> m ()
    newSTTArray: Int -> m (ArrayRef s a)
-   readSTTArray: ArrayRef s a -> Int -> m (Maybe a)
+   readSTTArray:  ArrayRef s a -> Int -> m (Maybe a)
    writeSTTArray: ArrayRef s a -> Int -> a -> m Bool
 
 export
@@ -65,3 +65,6 @@ export
    readSTTArray = \(MkSTTArray r), i => MkSTT (readArray r i) pure
    writeSTTArray = \(MkSTTArray r), i, x => MkSTT (writeArray r i x) pure
 
+export
+HasIO m => HasIO (STT s m) where
+   liftIO a = MkSTT a pure
