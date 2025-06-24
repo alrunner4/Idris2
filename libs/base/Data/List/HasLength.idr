@@ -45,7 +45,7 @@ hasLength (_ :: xs) = S (hasLength xs)
 export
 take : (n : Nat) -> (xs : Stream a) -> HasLength n (take n xs)
 take Z _ = Z
-take (S n) (x :: xs) = S (take n xs)
+take (S n) (x << xs) = S (take n xs)
 
 ------------------------------------------------------------------------
 -- Properties

@@ -750,27 +750,29 @@ getAt _     []        = Nothing
 -- STREAMS --
 -------------
 
+export infixr 7 <<
+
 namespace Stream
   ||| An infinite stream.
   public export
   data Stream : Type -> Type where
-       (::) : a -> Inf (Stream a) -> Stream a
+       (<<) : a -> Inf (Stream a) -> Stream a
 
 %name Stream xs, ys, zs
 
 public export
 Functor Stream where
-  map f (x :: xs) = f x :: map f xs
+  map f (x << xs) = f x << map f xs
 
 ||| The first element of an infinite stream.
 public export
 head : Stream a -> a
-head (x :: xs) = x
+head (x << xs) = x
 
 ||| All but the first element.
 public export
 tail : Stream a -> Stream a
-tail (x :: xs) = xs
+tail (x << xs) = xs
 
 ||| Take precisely n elements from the stream.
 ||| @ n how many elements to take
@@ -778,7 +780,7 @@ tail (x :: xs) = xs
 public export
 take : (n : Nat) -> (xs : Stream a) -> List a
 take Z xs = []
-take (S k) (x :: xs) = x :: take k xs
+take (S k) (x << xs) = x :: take k xs
 
 -------------
 -- STRINGS --
@@ -1073,12 +1075,12 @@ ceiling x = prim__doubleCeiling x
 
 public export
 countFrom : n -> (n -> n) -> Stream n
-countFrom start diff = start :: countFrom (diff start) diff
+countFrom start diff = start << countFrom (diff start) diff
 
 public export
 covering
 takeUntil : (n -> Bool) -> Stream n -> List n
-takeUntil p (x :: xs)
+takeUntil p (x << xs)
     = if p x
          then [x]
          else x :: takeUntil p xs
@@ -1086,7 +1088,7 @@ takeUntil p (x :: xs)
 public export
 covering
 takeBefore : (n -> Bool) -> Stream n -> List n
-takeBefore p (x :: xs)
+takeBefore p (x << xs)
     = if p x
          then []
          else x :: takeBefore p xs

@@ -26,7 +26,7 @@ fromList1 (h ::: t) = h ::: fromList t
 ||| Convert a stream to a `Colist1`.
 public export
 fromStream : Stream a -> Colist1 a
-fromStream (x :: xs) = x ::: fromStream xs
+fromStream (x << xs) = x ::: fromStream xs
 
 ||| Try to convert a `Colist` to a `Colist1`. Returns `Nothing` if
 ||| the given `Colist` is empty.

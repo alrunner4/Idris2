@@ -25,7 +25,7 @@ fromList (x :: xs) = x :: fromList xs
 ||| Convert a stream to a `Colist`.
 public export
 fromStream : Stream a -> Colist a
-fromStream (x :: xs) = x :: fromStream xs
+fromStream (x << xs) = x :: fromStream xs
 
 ||| Create a `Colist` of only a single element.
 public export

@@ -30,7 +30,6 @@ import Libraries.Data.String.Extra
 %hide Subst.Nil
 %hide CList.(::)
 %hide CList.Nil
-%hide Stream.(::)
 %hide Symbols.equals
 %hide Fin.fromInteger
 %hide String.indent

@@ -251,7 +251,7 @@ namespace Stream
   public export
   take : Fuel -> Stream a -> LazyList a
   take Dry _ = []
-  take (More f) (x :: xs) = x :: take f xs
+  take (More f) (x << xs) = x :: take f xs
 
 namespace Colist
 
